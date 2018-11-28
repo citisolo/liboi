@@ -86,6 +86,7 @@ int
 main(int argc, const char *argv[])
 {
   int r;
+  struct ev_loop *loop = ev_default_loop(0);
 
   oi_server_init(&server, 1000);
   server.on_connection = on_server_connection;
@@ -125,7 +126,7 @@ main(int argc, const char *argv[])
 #endif
 
   oi_server_listen(&server, servinfo);
-  oi_server_attach(EV_DEFAULT_ &server);
+  oi_server_attach(&server, loop);
 
   int i;
   for(i = 0; i < NCONN; i++) {
@@ -143,10 +144,10 @@ main(int argc, const char *argv[])
 #endif
     r = oi_socket_connect(client, servinfo);
     assert(r == 0 && "problem connecting");
-    oi_socket_attach(EV_DEFAULT_ client);
+    oi_socket_attach(client, loop);
   }
 
-  ev_loop(EV_DEFAULT_ 0);
+  ev_loop(loop, 0);
 
   assert(nconnections == NCONN);
 

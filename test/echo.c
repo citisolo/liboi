@@ -44,6 +44,7 @@ int
 main(int argc, const char *argv[])
 {
   int r;
+  struct ev_loop *loop = ev_default_loop(0);
   oi_server server;
   oi_socket client;
 
@@ -89,9 +90,9 @@ main(int argc, const char *argv[])
 #endif
   r = oi_server_listen(&server, servinfo);
   assert(r == 0);
-  oi_server_attach(EV_DEFAULT_ &server);
+  oi_server_attach(&server, loop);
 
-  ev_loop(EV_DEFAULT_ 0);
+  ev_loop(loop, 0);
 
 #if TCP
   freeaddrinfo(servinfo);
